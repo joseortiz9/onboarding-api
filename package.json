@@ -4,6 +4,7 @@
   "description": "NestJS Prisma Client Starter Project",
   "author": "Marc Stammerjohann",
   "license": "MIT",
+  "type": "commonjs",
   "keywords": [
     "nestjs",
     "prisma",
@@ -37,6 +38,7 @@
     "prisma:studio": "npx prisma studio",
     "prisma:generate": "npx prisma generate",
     "prisma:generate:watch": "npx prisma generate --watch",
+    "prisma:format": "npx prisma format",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
@@ -53,6 +55,7 @@
   },
   "dependencies": {
     "@devoxa/prisma-relay-cursor-connection": "2.2.2",
+    "@google-cloud/storage": "^6.9.0",
     "@nestjs/apollo": "10.0.19",
     "@nestjs/common": "9.0.5",
     "@nestjs/config": "2.2.0",
@@ -70,6 +73,7 @@
     "graphql": "16.5.0",
     "graphql-scalars": "1.17.0",
     "graphql-subscriptions": "2.0.0",
+    "graphql-upload": "^14.0.0",
     "nestjs-prisma": "0.17.0",
     "passport": "0.6.0",
     "passport-jwt": "4.0.0",

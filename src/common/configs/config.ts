@@ -19,6 +19,7 @@ const config: Config = {
     debug: true,
     schemaDestination: './src/schema.graphql',
     sortSchema: true,
+    uploadFilesEnabled: true,
   },
   security: {
     expiresIn: '2m',

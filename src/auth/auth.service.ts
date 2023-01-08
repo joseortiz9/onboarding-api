@@ -38,24 +38,26 @@ export class AuthService {
       });
 
       return this.generateTokens({
-        userId: user.id,
+        userId: user.id.toString(),
       });
     } catch (e) {
       if (
         e instanceof Prisma.PrismaClientKnownRequestError &&
         e.code === 'P2002'
       ) {
-        throw new ConflictException(`Email ${payload.email} already used.`);
+        throw new ConflictException(
+          `Username ${payload.username} already used.`
+        );
       }
       throw new Error(e);
     }
   }
 
-  async login(email: string, password: string): Promise<Token> {
-    const user = await this.prisma.user.findUnique({ where: { email } });
+  async login(username: string, password: string): Promise<Token> {
+    const user = await this.prisma.user.findUnique({ where: { username } });
 
     if (!user) {
-      throw new NotFoundException(`No user found for email: ${email}`);
+      throw new NotFoundException(`No user found for username: ${username}`);
     }
 
     const passwordValid = await this.passwordService.validatePassword(
@@ -68,11 +70,11 @@ export class AuthService {
     }
 
     return this.generateTokens({
-      userId: user.id,
+      userId: user.id.toString(),
     });
   }
 
-  validateUser(userId: string): Promise<User> {
+  validateUser(userId: number): Promise<User> {
     return this.prisma.user.findUnique({ where: { id: userId } });
   }
 

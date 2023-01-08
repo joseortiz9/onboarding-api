@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    // "module": "es2022",
     "module": "commonjs",
     "declaration": false,
     "removeComments": true,
@@ -11,6 +12,8 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "incremental": true,
-    "skipLibCheck": true
-  }
+    "skipLibCheck": true,
+    "allowJs": true,
+    // "moduleResolution": "node"
+  },
 }

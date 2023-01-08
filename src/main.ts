@@ -3,9 +3,11 @@ import { ConfigService } from '@nestjs/config';
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { PrismaClientExceptionFilter, PrismaService } from 'nestjs-prisma';
+import * as graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.js';
 import { AppModule } from './app.module';
 import type {
   CorsConfig,
+  GraphqlConfig,
   NestConfig,
   SwaggerConfig,
 } from 'src/common/configs/config.interface';
@@ -28,6 +30,7 @@ async function bootstrap() {
   const nestConfig = configService.get<NestConfig>('nest');
   const corsConfig = configService.get<CorsConfig>('cors');
   const swaggerConfig = configService.get<SwaggerConfig>('swagger');
+  const graphqlConfig = configService.get<GraphqlConfig>('graphql');
 
   // Swagger Api
   if (swaggerConfig.enabled) {
@@ -44,6 +47,11 @@ async function bootstrap() {
   // Cors
   if (corsConfig.enabled) {
     app.enableCors();
+  }
+
+  // graphql file uploads
+  if (graphqlConfig.uploadFilesEnabled) {
+    app.use(graphqlUploadExpress({ maxFileSize: 1000000, maxFiles: 10 }));
   }
 
   await app.listen(process.env.PORT || nestConfig.port || 3000);

@@ -7,11 +7,16 @@ import { AppService } from './app.service';
 import { AppResolver } from './app.resolver';
 import { AuthModule } from 'src/auth/auth.module';
 import { UsersModule } from 'src/users/users.module';
-import { PostsModule } from 'src/posts/posts.module';
 import config from 'src/common/configs/config';
 import { loggingMiddleware } from 'src/common/middleware/logging.middleware';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { GqlConfigService } from './gql-config.service';
+import { TopicsModule } from './topics/topics.module';
+import { QuestionsModule } from './questions/questions.module';
+import { RewardsModule } from './rewards/rewards.module';
+import { AnswersModule } from './answers/answers.module';
+import { StorageModule } from './storage/storage.module';
+import { MediaModule } from './media/media.module';
 
 @Module({
   imports: [
@@ -26,11 +31,17 @@ import { GqlConfigService } from './gql-config.service';
     GraphQLModule.forRootAsync<ApolloDriverConfig>({
       driver: ApolloDriver,
       useClass: GqlConfigService,
+      // uploads: false,
     }),
 
     AuthModule,
     UsersModule,
-    PostsModule,
+    TopicsModule,
+    RewardsModule,
+    QuestionsModule,
+    AnswersModule,
+    StorageModule,
+    MediaModule,
   ],
   controllers: [AppController],
   providers: [AppService, AppResolver],

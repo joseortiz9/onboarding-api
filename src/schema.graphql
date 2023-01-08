@@ -2,6 +2,21 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Answer {
+  answer: String!
+
+  """Identifies the date and time when the object was created."""
+  createdAt: DateTime
+  id: ID!
+  question: Question!
+  questionId: Int!
+
+  """Identifies the date and time when the object was last updated."""
+  updatedAt: DateTime
+  user: User!
+  userId: Int!
+}
+
 type Auth {
   """JWT access token"""
   accessToken: JWT!
@@ -16,9 +31,23 @@ input ChangePasswordInput {
   oldPassword: String!
 }
 
-input CreatePostInput {
-  content: String!
-  title: String!
+input CreateAnswerInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input CreateQuestionInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input CreateRewardInput {
+  name: String!
+  starsCost: Int!
+}
+
+input CreateTopicInput {
+  name: String!
 }
 
 """
@@ -32,81 +61,56 @@ A field whose value is a JSON Web Token (JWT): https://jwt.io/introduction.
 scalar JWT
 
 input LoginInput {
-  email: String!
   password: String!
+  username: String!
 }
 
 type Mutation {
   changePassword(data: ChangePasswordInput!): User!
-  createPost(data: CreatePostInput!): Post!
+  claimReward(rewardIdArgs: RewardIdArgs!): Reward!
+  createAnswer(createAnswerInput: CreateAnswerInput!): Answer!
+  createQuestion(createQuestionInput: CreateQuestionInput!): Question!
+  createReward(createRewardInput: CreateRewardInput!): Reward!
+  createTopic(createTopicInput: CreateTopicInput!): Topic!
   login(data: LoginInput!): Auth!
   refreshToken(token: JWT!): Token!
+  removeQuestion(id: Int!): Question!
   signup(data: SignupInput!): Auth!
+  updateQuestion(updateQuestionInput: UpdateQuestionInput!): Question!
   updateUser(data: UpdateUserInput!): User!
 }
 
-"""
-Possible directions in which to order a list of items when provided an `orderBy` argument.
-"""
-enum OrderDirection {
-  asc
-  desc
-}
-
-type PageInfo {
-  endCursor: String
-  hasNextPage: Boolean!
-  hasPreviousPage: Boolean!
-  startCursor: String
-}
-
-type Post {
-  author: User
-  content: String
-
-  """Identifies the date and time when the object was created."""
-  createdAt: DateTime!
-  id: ID!
-  published: Boolean!
-  title: String!
-
-  """Identifies the date and time when the object was last updated."""
-  updatedAt: DateTime!
-}
-
-type PostConnection {
-  edges: [PostEdge!]
-  pageInfo: PageInfo!
-  totalCount: Int!
-}
-
-type PostEdge {
-  cursor: String!
-  node: Post!
-}
-
-input PostOrder {
-  direction: OrderDirection!
-  field: PostOrderField!
-}
-
-"""Properties by which post connections can be ordered."""
-enum PostOrderField {
-  content
-  createdAt
-  id
-  published
-  title
-  updatedAt
-}
-
 type Query {
+  answers: [Answer!]!
   hello(name: String!): String!
   helloWorld: String!
   me: User!
-  post(postId: String!): Post!
-  publishedPosts(after: String, before: String, first: Int, last: Int, orderBy: PostOrder, query: String, skip: Int): PostConnection!
-  userPosts(userId: String!): [Post!]!
+  question(id: Int!): Question!
+  questions: [Question!]!
+  rewards: [Reward!]!
+  topics: [Topic!]!
+  userRewards(userId: Int!): [Reward!]!
+  userTopics(userId: Int!): [Topic!]!
+}
+
+type Question {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+type Reward {
+  """Identifies the date and time when the object was created."""
+  createdAt: DateTime
+  id: ID!
+  name: String!
+  starsCost: Int!
+
+  """Identifies the date and time when the object was last updated."""
+  updatedAt: DateTime
+}
+
+input RewardIdArgs {
+  rewardId: Int!
 }
 
 """User role"""
@@ -116,14 +120,12 @@ enum Role {
 }
 
 input SignupInput {
-  email: String!
-  firstname: String
-  lastname: String
   password: String!
+  username: String!
 }
 
 type Subscription {
-  postCreated: Post!
+  userUpdated: User!
 }
 
 type Token {
@@ -134,21 +136,36 @@ type Token {
   refreshToken: JWT!
 }
 
+type Topic {
+  """Identifies the date and time when the object was created."""
+  createdAt: DateTime
+  id: ID!
+  name: String!
+  questions: [Question!]!
+
+  """Identifies the date and time when the object was last updated."""
+  updatedAt: DateTime
+}
+
+input UpdateQuestionInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
 input UpdateUserInput {
-  firstname: String
-  lastname: String
+  stars: Int!
 }
 
 type User {
   """Identifies the date and time when the object was created."""
-  createdAt: DateTime!
-  email: String!
-  firstname: String
+  createdAt: DateTime
   id: ID!
-  lastname: String
-  posts: [Post!]
   role: Role!
+  stars: Int!
+  topics: [Topic!]!
 
   """Identifies the date and time when the object was last updated."""
-  updatedAt: DateTime!
+  updatedAt: DateTime
+  username: String!
 }

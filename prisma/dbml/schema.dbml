@@ -33,14 +33,24 @@ Table UsersTopics {
   }
 }
 
+Table File {
+  id Int [pk, increment]
+  url String [not null]
+  name String [not null]
+  mimetype String
+  Question Question [not null]
+}
+
 Table Question {
   id Int [pk, increment]
   question String [not null]
-  answer String [not null]
+  correctAnswer String [not null]
   starsAmount Int [not null, default: 0]
   topic Topic [not null]
   topicId Int [not null]
   Answer Answer [not null]
+  doc File [not null]
+  docId Int [not null]
 }
 
 Table Answer {
@@ -49,6 +59,7 @@ Table Answer {
   question Question [not null]
   questionId Int [not null]
   answer String [not null]
+  isCorrect Boolean [not null, default: true]
 
   indexes {
     (userId, questionId) [pk]
@@ -84,6 +95,8 @@ Ref: UsersTopics.userId > User.id
 Ref: UsersTopics.topicId > Topic.id
 
 Ref: Question.topicId > Topic.id
+
+Ref: Question.docId > File.id
 
 Ref: Answer.userId > User.id
 

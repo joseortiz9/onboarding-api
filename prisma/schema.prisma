@@ -46,14 +46,24 @@ model UsersTopics {
   @@id([userId, topicId])
 }
 
+model File {
+  id       Int        @id @default(autoincrement())
+  url      String
+  name     String?
+  mimetype String?
+  Question Question[]
+}
+
 model Question {
-  id          Int      @id @default(autoincrement())
-  question    String
-  answer      String
-  starsAmount Int      @default(0)
-  topic       Topic    @relation(fields: [topicId], references: [id])
-  topicId     Int
-  Answer      Answer[]
+  id            Int      @id @default(autoincrement())
+  question      String
+  correctAnswer String
+  starsAmount   Int      @default(0)
+  topic         Topic    @relation(fields: [topicId], references: [id])
+  topicId       Int
+  Answer        Answer[]
+  doc           File     @relation(fields: [docId], references: [id])
+  docId         Int
 }
 
 model Answer {
@@ -62,6 +72,7 @@ model Answer {
   question   Question @relation(fields: [questionId], references: [id])
   questionId Int
   answer     String
+  isCorrect  Boolean  @default(false)
 
   @@id([userId, questionId])
 }

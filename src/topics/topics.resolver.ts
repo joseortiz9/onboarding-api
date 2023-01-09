@@ -32,8 +32,12 @@ export class TopicsResolver {
   }
 
   @Query(() => [Topic])
-  userTopics(@Args() id: UserIdArgs) {
-    return this.prisma.user.findUnique({ where: { id: id.userId } }).topics();
+  async userTopics(@Args() id: UserIdArgs) {
+    const topics = await this.prisma.usersTopics.findMany({
+      where: { userId: id.userId },
+      include: { topic: true },
+    });
+    return topics.map(({ topic }) => topic);
   }
 
   @ResolveField('questions', () => [Question])

@@ -4,16 +4,9 @@
 
 type Answer {
   answer: String!
-
-  """Identifies the date and time when the object was created."""
-  createdAt: DateTime
-  id: ID!
   isCorrect: Boolean!
   question: Question!
   questionId: Int!
-
-  """Identifies the date and time when the object was last updated."""
-  updatedAt: DateTime
   user: User!
   userId: Int!
 }
@@ -112,6 +105,7 @@ type Query {
   rewards: [Reward!]!
   topics: [Topic!]!
   userAnswers(questionId: Int, userId: Int!): [Answer!]!
+  userQuestions: [Question!]!
   userRewards(userId: Int!): [Reward!]!
   userTopics(userId: Int!): [Topic!]!
 }

@@ -26,8 +26,8 @@ export class RewardsResolver {
   }
 
   @Query(() => [Reward])
-  userRewards(@Args() id: UserIdArgs) {
-    return this.rewardsService.userRewards(id.userId);
+  async userRewards(@Args() id: UserIdArgs) {
+    return await this.rewardsService.userRewards(id.userId);
   }
 
   @UseGuards(GqlAuthGuard)

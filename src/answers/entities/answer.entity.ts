@@ -4,7 +4,7 @@ import { BaseModel } from 'src/common/models/base.model';
 import { User } from 'src/users/models/user.model';
 
 @ObjectType()
-export class Answer extends BaseModel {
+export class Answer {
   @Field()
   answer: string;
   @Field(() => Int)

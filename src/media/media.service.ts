@@ -11,7 +11,10 @@ export class MediaService {
     private prisma: PrismaService
   ) {}
 
-  async create({ fileUpload, locationSlug }: CreateFileUploadInput) {
+  async create({
+    fileUpload,
+    locationSlug,
+  }: CreateFileUploadInput): Promise<MediaFile> {
     const _fileUpload = await fileUpload;
     return new Promise(async (resolve, reject) => {
       this.storageService.saveFromGraphql(

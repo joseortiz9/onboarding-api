@@ -19,6 +19,9 @@ export class AnswersService {
         questionId: question.id,
         answer: createAnswerInput.userAnswer,
       },
+      include: {
+        question: true,
+      },
     });
     if (isCorrect) {
       await this.prisma.user.update({

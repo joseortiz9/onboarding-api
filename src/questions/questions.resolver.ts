@@ -26,16 +26,22 @@ export class QuestionsResolver {
 
   @UseGuards(GqlAuthGuard)
   @Mutation(() => Question)
-  createQuestion(
+  async createQuestion(
     @UserEntity() user: User,
     @Args('createQuestionInput') createQuestionInput: CreateQuestionInput
   ) {
-    return this.questionsService.create(user, createQuestionInput);
+    return await this.questionsService.create(user, createQuestionInput);
   }
 
   @Query(() => [Question], { name: 'questions' })
   findAll() {
     return this.questionsService.findAll();
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @Query(() => [Question])
+  async userQuestions(@UserEntity() user: User) {
+    return await this.questionsService.userQuestions(user);
   }
 
   @ResolveField('topic', () => Topic)

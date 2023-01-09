@@ -11,11 +11,35 @@ export class QuestionsService {
     private prisma: PrismaService
   ) {}
 
-  create(user: User, createQuestionInput: CreateQuestionInput) {
-    return 'This action adds a new question';
+  async create(user: User, createQuestionInput: CreateQuestionInput) {
+    const topic = await this.prisma.topic.findUniqueOrThrow({
+      where: { id: createQuestionInput.topicId },
+    });
+    const docFile = await this.mediaService.create({
+      fileUpload: createQuestionInput.docFile,
+      locationSlug: `topic_${topic.id}`,
+    });
+    return await this.prisma.question.create({
+      data: {
+        question: createQuestionInput.question,
+        correctAnswer: createQuestionInput.correctAnswer,
+        starsAmount: createQuestionInput.starsAmount || 0,
+        topicId: topic.id,
+        docId: docFile.id,
+      },
+    });
   }
 
   findAll() {
-    return `This action returns all questions`;
+    return this.prisma.question.findMany();
+  }
+
+  async userQuestions(user: User) {
+    const userTopics = await this.prisma.usersTopics.findMany({
+      where: { userId: user.id },
+    });
+    return await this.prisma.question.findMany({
+      where: { topicId: { in: userTopics.map((topic) => topic.topicId) } },
+    });
   }
 }

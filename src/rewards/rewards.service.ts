@@ -22,11 +22,12 @@ export class RewardsService {
     return this.prisma.reward.findMany();
   }
 
-  userRewards(userId: number) {
-    return this.prisma.usersRewards.findMany({
+  async userRewards(userId: number) {
+    const rewards = await this.prisma.usersRewards.findMany({
       where: { userId },
       include: { reward: true },
     });
+    return rewards.map(({ reward }) => reward);
   }
 
   async claimReward(user: User, rewardId: number): Promise<Reward> {

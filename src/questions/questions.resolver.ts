@@ -9,9 +9,13 @@ import {
 import { QuestionsService } from './questions.service';
 import { Question } from './entities/question.entity';
 import { CreateQuestionInput } from './dto/create-question.input';
-import { Topic } from '../topics/entities/topic.entity';
+import { Topic } from 'src/topics/entities/topic.entity';
 import { PrismaService } from 'nestjs-prisma';
-import { MediaFile } from '../media/models/media-file.model';
+import { MediaFile } from 'src/media/models/media-file.model';
+import { UseGuards } from '@nestjs/common';
+import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
+import { UserEntity } from 'src/common/decorators/user.decorator';
+import { User } from 'src/users/models/user.model';
 
 @Resolver(() => Question)
 export class QuestionsResolver {
@@ -20,11 +24,13 @@ export class QuestionsResolver {
     private prisma: PrismaService
   ) {}
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => Question)
   createQuestion(
+    @UserEntity() user: User,
     @Args('createQuestionInput') createQuestionInput: CreateQuestionInput
   ) {
-    return this.questionsService.create(createQuestionInput);
+    return this.questionsService.create(user, createQuestionInput);
   }
 
   @Query(() => [Question], { name: 'questions' })

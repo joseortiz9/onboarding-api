@@ -8,6 +8,7 @@ type Answer {
   """Identifies the date and time when the object was created."""
   createdAt: DateTime
   id: ID!
+  isCorrect: Boolean!
   question: Question!
   questionId: Int!
 
@@ -32,13 +33,21 @@ input ChangePasswordInput {
 }
 
 input CreateAnswerInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  questionId: Int!
+  userAnswer: String!
+}
+
+input CreateFileUploadInput {
+  fileUpload: Upload!
+  locationSlug: String
 }
 
 input CreateQuestionInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  correctAnswer: String!
+  docFile: Upload!
+  question: String!
+  starsAmount: Int!
+  topicId: Int!
 }
 
 input CreateRewardInput {
@@ -65,6 +74,21 @@ input LoginInput {
   username: String!
 }
 
+type MediaFile {
+  bucket: String
+
+  """Identifies the date and time when the object was created."""
+  createdAt: DateTime
+  id: ID!
+  metadataUrl: String
+  mimetype: String
+  name: String
+
+  """Identifies the date and time when the object was last updated."""
+  updatedAt: DateTime
+  url: String!
+}
+
 type Mutation {
   changePassword(data: ChangePasswordInput!): User!
   claimReward(rewardIdArgs: RewardIdArgs!): Reward!
@@ -74,10 +98,9 @@ type Mutation {
   createTopic(createTopicInput: CreateTopicInput!): Topic!
   login(data: LoginInput!): Auth!
   refreshToken(token: JWT!): Token!
-  removeQuestion(id: Int!): Question!
   signup(data: SignupInput!): Auth!
-  updateQuestion(updateQuestionInput: UpdateQuestionInput!): Question!
   updateUser(data: UpdateUserInput!): User!
+  uploadMedia(createFileUploadInput: CreateFileUploadInput!): MediaFile!
 }
 
 type Query {
@@ -85,17 +108,27 @@ type Query {
   hello(name: String!): String!
   helloWorld: String!
   me: User!
-  question(id: Int!): Question!
   questions: [Question!]!
   rewards: [Reward!]!
   topics: [Topic!]!
+  userAnswers(questionId: Int, userId: Int!): [Answer!]!
   userRewards(userId: Int!): [Reward!]!
   userTopics(userId: Int!): [Topic!]!
 }
 
 type Question {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  correctAnswer: String!
+
+  """Identifies the date and time when the object was created."""
+  createdAt: DateTime
+  doc: MediaFile!
+  id: ID!
+  question: String!
+  starsAmount: Int!
+  topic: Topic!
+
+  """Identifies the date and time when the object was last updated."""
+  updatedAt: DateTime
 }
 
 type Reward {
@@ -147,15 +180,12 @@ type Topic {
   updatedAt: DateTime
 }
 
-input UpdateQuestionInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
-}
-
 input UpdateUserInput {
   stars: Int!
 }
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
 
 type User {
   """Identifies the date and time when the object was created."""

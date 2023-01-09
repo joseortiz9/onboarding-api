@@ -6,4 +6,9 @@ coverage/
 .DS_Store
 
 prisma/migrations/dev/
+prisma/certs
+
 .env
+.env.prod
+.env.local
+cloud-computing-itmo-*.json

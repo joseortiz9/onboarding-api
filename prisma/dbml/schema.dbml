@@ -36,8 +36,10 @@ Table UsersTopics {
 Table File {
   id Int [pk, increment]
   url String [not null]
-  name String [not null]
+  name String
   mimetype String
+  bucket String
+  metadataUrl String
   Question Question [not null]
 }
 
@@ -59,7 +61,7 @@ Table Answer {
   question Question [not null]
   questionId Int [not null]
   answer String [not null]
-  isCorrect Boolean [not null, default: true]
+  isCorrect Boolean [not null, default: false]
 
   indexes {
     (userId, questionId) [pk]

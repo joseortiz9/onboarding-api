@@ -2,40 +2,67 @@ import { Injectable } from '@nestjs/common';
 import { DownloadResponse, Storage } from '@google-cloud/storage';
 import StorageConfig from './storage-config';
 import { StorageFile } from './entities/storage-file.entity';
-import { PrismaService } from 'nestjs-prisma';
+import { FileUpload } from '../common/models/file-upload.model';
+import { Optional } from '../common/utils';
+import { MediaFile } from '../media/models/media-file.model';
 
 @Injectable()
 export class StorageService {
   private storage: Storage;
   private bucket: string;
 
-  constructor(private prisma: PrismaService) {
+  constructor() {
     this.storage = new Storage({
       projectId: StorageConfig.projectId,
-      credentials: {
-        client_email: StorageConfig.client_email,
-        private_key: StorageConfig.private_key,
-      },
+      keyFilename: StorageConfig.keyFilename,
+      // credentials: {
+      //   client_email: StorageConfig.client_email,
+      //   private_key: StorageConfig.private_key,
+      // },
     });
-
     this.bucket = StorageConfig.mediaBucket;
   }
 
-  async save(
+  saveFromGraphql(
+    fileUpload: FileUpload,
+    locationSlug: string | undefined,
+    onUpload: (file: Optional<MediaFile, 'id'>) => void
+  ) {
+    const { createReadStream, filename, encoding, mimetype } = fileUpload;
+    const path = locationSlug ? `${locationSlug}/${filename}` : filename;
+    const metadata = [{ mediaId: filename, encoding, mimetype }];
+    const object = metadata.reduce((obj, item) => Object.assign(obj, item), {});
+    const file = this.storage.bucket(this.bucket).file(path);
+    createReadStream()
+      .pipe(file.createWriteStream({ resumable: false, gzip: true }))
+      .on('finish', async () => {
+        await file.setMetadata({ metadata: object });
+        return onUpload({
+          url: file.metadata.mediaLink,
+          name: file.metadata.name,
+          mimetype: file.metadata.contentType,
+          bucket: file.metadata.bucket,
+          metadataUrl: file.metadata.selfLink,
+        });
+      });
+  }
+
+  save(
     path: string,
     contentType: string,
-    media: Buffer,
+    media: Buffer | undefined,
     metadata: { [key: string]: string }[]
   ) {
     const object = metadata.reduce((obj, item) => Object.assign(obj, item), {});
     const file = this.storage.bucket(this.bucket).file(path);
-    const stream = file.createWriteStream();
+    const stream = file.createWriteStream({ resumable: false, gzip: true });
     stream.on('finish', async () => {
       return await file.setMetadata({
         metadata: object,
       });
     });
     stream.end(media);
+    return stream;
   }
 
   async delete(path: string) {

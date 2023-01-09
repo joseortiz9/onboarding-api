@@ -47,11 +47,13 @@ model UsersTopics {
 }
 
 model File {
-  id       Int        @id @default(autoincrement())
-  url      String
-  name     String?
-  mimetype String?
-  Question Question[]
+  id          Int        @id @default(autoincrement())
+  url         String
+  name        String?
+  mimetype    String?
+  bucket      String?
+  metadataUrl String?
+  Question    Question[]
 }
 
 model Question {

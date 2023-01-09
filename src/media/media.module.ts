@@ -6,5 +6,6 @@ import { StorageModule } from 'src/storage/storage.module';
 @Module({
   imports: [StorageModule],
   providers: [MediaResolver, MediaService],
+  exports: [MediaService],
 })
 export class MediaModule {}

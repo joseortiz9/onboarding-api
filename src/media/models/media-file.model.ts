@@ -6,4 +6,6 @@ export class MediaFile extends BaseModel {
   url: string;
   name?: string;
   mimetype?: string;
+  bucket?: string;
+  metadataUrl?: string;
 }

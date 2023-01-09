@@ -38,7 +38,7 @@ export class AuthService {
       });
 
       return this.generateTokens({
-        userId: user.id.toString(),
+        userId: user.id,
       });
     } catch (e) {
       if (
@@ -70,7 +70,7 @@ export class AuthService {
     }
 
     return this.generateTokens({
-      userId: user.id.toString(),
+      userId: user.id,
     });
   }
 
@@ -83,18 +83,18 @@ export class AuthService {
     return this.prisma.user.findUnique({ where: { id } });
   }
 
-  generateTokens(payload: { userId: string }): Token {
+  generateTokens(payload: { userId: number }): Token {
     return {
       accessToken: this.generateAccessToken(payload),
       refreshToken: this.generateRefreshToken(payload),
     };
   }
 
-  private generateAccessToken(payload: { userId: string }): string {
+  private generateAccessToken(payload: { userId: number }): string {
     return this.jwtService.sign(payload);
   }
 
-  private generateRefreshToken(payload: { userId: string }): string {
+  private generateRefreshToken(payload: { userId: number }): string {
     const securityConfig = this.configService.get<SecurityConfig>('security');
     return this.jwtService.sign(payload, {
       secret: this.configService.get('JWT_REFRESH_SECRET'),

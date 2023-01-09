@@ -1,16 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { CreateQuestionInput } from './dto/create-question.input';
 import { PrismaService } from 'nestjs-prisma';
-import { StorageService } from '../storage/storage.service';
+import { User } from '../users/models/user.model';
+import { MediaService } from '../media/media.service';
 
 @Injectable()
 export class QuestionsService {
   constructor(
-    private storageService: StorageService,
+    private readonly mediaService: MediaService,
     private prisma: PrismaService
   ) {}
 
-  create(createQuestionInput: CreateQuestionInput) {
+  create(user: User, createQuestionInput: CreateQuestionInput) {
     return 'This action adds a new question';
   }
 

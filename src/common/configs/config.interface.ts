@@ -1,9 +1,12 @@
+import { RedisModuleOptions } from '@liaoliaots/nestjs-redis';
+
 export interface Config {
   nest: NestConfig;
   cors: CorsConfig;
   swagger: SwaggerConfig;
   graphql: GraphqlConfig;
   security: SecurityConfig;
+  redis: RedisModuleOptions;
 }
 
 export interface NestConfig {

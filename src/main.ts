@@ -11,6 +11,8 @@ import type {
   NestConfig,
   SwaggerConfig,
 } from 'src/common/configs/config.interface';
+import { load as loadSecrets } from '@qatalog/gcp-config';
+import * as assert from 'assert';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -48,6 +50,20 @@ async function bootstrap() {
   if (corsConfig.enabled) {
     app.enableCors();
   }
+
+  const config = await loadSecrets({
+    project: process.env.PROJECT_ID,
+    schema: {
+      jwtAccessToken: {
+        secret: 'JWT_ACCESS_SECRET',
+      },
+      jwtRefreshToken: {
+        secret: 'JWT_REFRESH_SECRET',
+      },
+    },
+  });
+  assert(typeof config.jwtAccessToken === 'string');
+  assert(typeof config.jwtRefreshToken === 'string');
 
   // graphql file uploads
   if (graphqlConfig.uploadFilesEnabled) {

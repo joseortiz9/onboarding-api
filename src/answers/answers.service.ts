@@ -3,10 +3,14 @@ import { CreateAnswerInput } from './dto/create-answer.input';
 import { User } from 'src/users/models/user.model';
 import { PrismaService } from 'nestjs-prisma';
 import { UserAnswersIdArgs } from './args/user-answers-id.args';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
 export class AnswersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private notificationService: NotificationsService
+  ) {}
   async create(user: User, createAnswerInput: CreateAnswerInput) {
     const question = await this.prisma.question.findUniqueOrThrow({
       where: { id: createAnswerInput.questionId },
@@ -29,6 +33,7 @@ export class AnswersService {
         data: { stars: user.stars + question.starsAmount },
       });
     }
+    await this.notificationService.send();
     return answered;
   }
 

@@ -1,6 +1,6 @@
 import { GraphQLModule } from '@nestjs/graphql';
 import { Logger, Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PrismaModule } from 'nestjs-prisma';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -17,6 +17,8 @@ import { RewardsModule } from './rewards/rewards.module';
 import { AnswersModule } from './answers/answers.module';
 import { StorageModule } from './storage/storage.module';
 import { MediaModule } from './media/media.module';
+import { RedisModule } from '@liaoliaots/nestjs-redis';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
@@ -34,6 +36,11 @@ import { MediaModule } from './media/media.module';
       // uploads: false,
     }),
 
+    RedisModule.forRootAsync({
+      useFactory: (configService: ConfigService) => configService.get('redis'),
+      inject: [ConfigService],
+    }),
+
     AuthModule,
     UsersModule,
     TopicsModule,
@@ -42,6 +49,7 @@ import { MediaModule } from './media/media.module';
     AnswersModule,
     StorageModule,
     MediaModule,
+    NotificationsModule,
   ],
   controllers: [AppController],
   providers: [AppService, AppResolver],

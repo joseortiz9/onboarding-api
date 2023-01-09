@@ -1,6 +1,5 @@
 import {
   Args,
-  Int,
   Mutation,
   Parent,
   Query,
@@ -22,22 +21,20 @@ export class TopicsResolver {
   ) {}
 
   @Mutation(() => Topic)
-  createTopic(@Args('createTopicInput') createTopicInput: CreateTopicInput) {
-    return this.topicsService.create(createTopicInput);
+  async createTopic(
+    @Args('createTopicInput') createTopicInput: CreateTopicInput
+  ) {
+    return await this.topicsService.create(createTopicInput);
   }
 
   @Query(() => [Topic], { name: 'topics' })
-  findAll() {
-    return this.topicsService.findAll();
+  async findAll() {
+    return await this.topicsService.findAll();
   }
 
   @Query(() => [Topic])
   async userTopics(@Args() id: UserIdArgs) {
-    const topics = await this.prisma.usersTopics.findMany({
-      where: { userId: id.userId },
-      include: { topic: true },
-    });
-    return topics.map(({ topic }) => topic);
+    return await this.topicsService.userTopics(id.userId);
   }
 
   @ResolveField('questions', () => [Question])

@@ -1,4 +1,5 @@
 import type { Config } from './config.interface';
+import * as process from 'process';
 
 const config: Config = {
   nest: {
@@ -25,6 +26,14 @@ const config: Config = {
     expiresIn: '2m',
     refreshIn: '7d',
     bcryptSaltOrRound: 10,
+  },
+  redis: {
+    config: {
+      name: 'onboarding-api-redis',
+      host: process.env.REDIS_HOST,
+      port: Number(process.env.REDIS_PORT),
+      keyPrefix: 'onboarding_api:',
+    },
   },
 };
 
